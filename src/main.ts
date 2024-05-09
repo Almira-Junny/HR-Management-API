@@ -10,6 +10,7 @@ import { ValidationError } from 'class-validator';
 import { SwaggerModule } from '@nestjs/swagger';
 import openAPIConfig from './configs/openapi.config';
 import { HttpExceptionFilter } from './utils/http.exception-filter';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 async function bootstrap() {
   const logger = new Logger(bootstrap.name);
@@ -18,8 +19,11 @@ async function bootstrap() {
   // CORS
   app.enableCors();
 
-  //Serialization
+  //App Filter
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  // Interceptors
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   // Validation
   app.useGlobalPipes(
