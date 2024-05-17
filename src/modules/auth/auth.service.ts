@@ -25,7 +25,7 @@ export class AuthService {
     @InjectRepository(Employee)
     private readonly employeeRepository: Repository<Employee>,
 
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
   ) {}
 
   public async getTokenForUser(employee: Employee): Promise<String> {
@@ -136,14 +136,15 @@ export class AuthService {
     //Generate token
     const token = randomBytes(20).toString('hex');
 
-    employee.passwordResetToken = createHash('sha256').update(token).digest('hex');
+    employee.passwordResetToken = createHash('sha256')
+      .update(token)
+      .digest('hex');
     employee.passwordResetTokenExpire = new Date(Date.now() + 10 * 60 * 1000);
 
     await this.employeeRepository.save(employee);
 
-    //Send email  
+    //Send email
     await this.mailService.sendForgotPassword(employee, token);
-
 
     return {
       message: 'Success. Please check your email to reset password',
@@ -155,7 +156,7 @@ export class AuthService {
     const employee = await this.employeeRepository.findOne({
       where: {
         passwordResetToken: createHash('sha256').update(token).digest('hex'),
-        passwordResetTokenExpire: MoreThan(new Date())
+        passwordResetTokenExpire: MoreThan(new Date()),
       },
     });
 
@@ -174,7 +175,15 @@ export class AuthService {
     await this.employeeRepository.save(employee);
 
     return {
-      message: "Success. Password is updated"
-    }
+      message: 'Success. Password is updated',
+    };
+  }
+
+  public async getMyProfile(employee: Employee) {
+    return await this.employeeRepository.findOne({
+      where: {
+        id: employee.id,
+      },
+    });
   }
 }

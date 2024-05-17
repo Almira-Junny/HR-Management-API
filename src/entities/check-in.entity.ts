@@ -6,23 +6,26 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Employee } from './employee.entity';
 
-@Entity('job_titles')
-export class JobTitle {
+@Entity('check_ins')
+export class CheckIn {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'name', nullable: false, unique: true })
-  name: string;
+  @Column({ name: 'employee_id', nullable: false })
+  employeeId: number;
 
-  @Column({ name: 'responsibilities', nullable: false, type: 'text' })
-  responsibilities: string;
+  @Column({ name: 'time_in', nullable: false })
+  timeIn: Date;
+
+  @Column({ name: 'time_out', nullable: true })
+  timeOut: Date;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -46,6 +49,7 @@ export class JobTitle {
   public setCreateDate(): void {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+    this.timeIn = new Date();
   }
 
   @BeforeUpdate()
@@ -58,6 +62,7 @@ export class JobTitle {
     this.deletedAt = new Date();
   }
 
-  @OneToMany(() => Employee, (employee) => employee.jobTitle)
-  employees: Employee[];
+  @ManyToOne(() => Employee, (employee) => employee.checkIns)
+  @JoinColumn({ name: 'employee_id' })
+  employee: Employee;
 }

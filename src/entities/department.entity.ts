@@ -6,23 +6,24 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToOne,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Employee } from './employee.entity';
 
-@Entity('job_titles')
-export class JobTitle {
+@Entity('departments')
+export class Department {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ name: 'name', nullable: false, unique: true })
   name: string;
 
-  @Column({ name: 'responsibilities', nullable: false, type: 'text' })
-  responsibilities: string;
+  @Column({ name: 'manager_id', nullable: true })
+  managerId: number;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -58,6 +59,10 @@ export class JobTitle {
     this.deletedAt = new Date();
   }
 
-  @OneToMany(() => Employee, (employee) => employee.jobTitle)
+  @OneToMany(() => Employee, (employee) => employee.department)
   employees: Employee[];
+
+  @OneToOne(() => Employee)
+  @JoinColumn({ name: 'manager_id' })
+  manager: Employee;
 }

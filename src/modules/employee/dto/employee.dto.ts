@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
@@ -90,3 +91,5 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   departmentId: number;
 }
+
+export class UpdateEmployeeDto extends PartialType(CreateEmployeeDto) {}

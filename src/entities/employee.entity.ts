@@ -9,9 +9,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { JobTitle } from './job-title.entity';
+import { Department } from './department.entity';
+import { CheckIn } from './check-in.entity';
 
 @Entity('employees')
 export class Employee {
@@ -61,7 +67,7 @@ export class Employee {
   @Column({ name: 'on_job_date', nullable: false })
   onJobDate: Date;
 
-  @Column({ name: 'job_title_id', nullable: false })
+  @Column({ name: 'job_title_id', nullable: true })
   jobTitleId: number;
 
   @Column({ name: 'department_id', nullable: true })
@@ -75,10 +81,10 @@ export class Employee {
   // @Column({ name: 'qr_expire', nullable: true })
   // qrExpire?: Date;
 
-  @Column({name: "password_reset_token", nullable: true})
+  @Column({ name: 'password_reset_token', nullable: true })
   passwordResetToken: string;
 
-  @Column({name: "password_reset_token_expire", nullable: true})
+  @Column({ name: 'password_reset_token_expire', nullable: true })
   passwordResetTokenExpire: Date;
 
   @CreateDateColumn({
@@ -114,4 +120,15 @@ export class Employee {
   public setDeleteDate(): void {
     this.deletedAt = new Date();
   }
+
+  @ManyToOne(() => JobTitle, (jobTitle) => jobTitle.employees)
+  @JoinColumn({ name: 'job_title_id' })
+  jobTitle: JobTitle;
+
+  @ManyToOne(() => Department, (department) => department.employees)
+  @JoinColumn({ name: 'department_id' })
+  department: Department;
+
+  @OneToMany(() => CheckIn, (checkIn) => checkIn.employee)
+  checkIns: CheckIn[];
 }

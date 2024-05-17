@@ -1,14 +1,18 @@
 import { JobTitle } from 'src/entities/job-title.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreateJobTitleDto, UpdateJobTitleDto } from './dto/job-title.dto';
+import { Employee } from 'src/entities/employee.entity';
 
 @Injectable()
 export class JobTitleService {
   constructor(
     @InjectRepository(JobTitle)
     private readonly jobTitleRepository: Repository<JobTitle>,
+
+    // @InjectRepository(Employee)
+    // private readonly employeeRepository: Repository<Employee>,
   ) {}
 
   public async getAll(): Promise<JobTitle[]> {
@@ -62,5 +66,18 @@ export class JobTitleService {
     }
 
     return await this.jobTitleRepository.softRemove(jobTitle);
+  }
+
+  public async getEmployeesByJobTitle(id: number) {
+    const jobTitle = await this.jobTitleRepository.findOne({
+      where: { id },
+      relations: ['employees'],
+    });
+
+    if (!jobTitle) {
+      throw new BadRequestException('Job title not found');
+    }
+
+    return jobTitle.employees;
   }
 }
