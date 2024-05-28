@@ -26,7 +26,11 @@ export class CheckInService {
   }
 
   public async createOne(input: CreateCheckInDto) {
-    return await this.checkInRepository.save(input);
+    return await this.checkInRepository.save({
+      ...input,
+      timeIn: new Date(input.timeIn),
+      timeOut: input.timeOut ? new Date(input.timeOut) : null,
+    });
   }
 
   public async checkIn(employeeId: number) {
@@ -66,6 +70,8 @@ export class CheckInService {
       },
       {
         ...input,
+        ...(input.timeIn ? { timeIn: new Date(input.timeIn) } : {}),
+        ...(input.timeOut ? { timeOut: new Date(input.timeOut) } : {}),
       },
     );
   }

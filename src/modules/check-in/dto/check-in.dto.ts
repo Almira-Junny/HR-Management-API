@@ -1,17 +1,21 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsDateString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateCheckInDto {
   @IsNotEmpty()
   @IsNumber()
+  @ApiProperty()
   employeeId: number;
 
   @IsNotEmpty()
-  @IsDate()
-  timeIn: Date;
+  @IsDateString()
+  @ApiProperty()
+  timeIn: string;
 
-  @IsDate()
-  timeOut?: Date;
+  @IsDateString()
+  @ApiProperty()
+  timeOut?: string;
 }
 
 export class UpdateCheckInDto extends PartialType(CreateCheckInDto) {}

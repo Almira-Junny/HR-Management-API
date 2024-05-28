@@ -13,7 +13,7 @@ import { Employee } from 'src/entities/employee.entity';
 import { AuthGuardLocal } from './guard/auth-guard.local';
 import { AuthGuardJwt } from './guard/auth-guard.jwt';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { CreateEmployeeDto } from '../employee/dto/employee.dto';
 import { Response } from 'express';
@@ -21,6 +21,9 @@ import { AuthGuardRefreshToken } from './guard/auth-guard.refresh-token';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/enums';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @Controller('/auth')
 @ApiTags('auth')
@@ -48,6 +51,13 @@ export class AuthController {
     };
   }
 
+  @ApiBearerAuth('token')
+  @UseGuards(AuthGuardJwt)
+  @ApiOperation({
+    summary: 'Only for HR',
+  })
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Post('/register')
   @ApiBody({ type: CreateEmployeeDto })
   public async register(@Body() body: CreateEmployeeDto) {

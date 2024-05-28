@@ -85,7 +85,7 @@ export class CreateEmployeeDto {
   jobTitleId: number;
 
   @ApiProperty({
-    example: '1',
+    example: '2',
   })
   @IsNumber()
   @IsNotEmpty()

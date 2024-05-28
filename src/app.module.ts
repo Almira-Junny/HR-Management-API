@@ -12,6 +12,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './guards/roles.guard';
 import DepartmentModule from './modules/departments/department.module';
 import CheckInModule from './modules/check-in/check-in.module';
+import { ScheduleModule } from './modules/schedule/schedule.module';
+import { MessageModule } from './modules/message/message.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import CheckInModule from './modules/check-in/check-in.module';
     JobTitleModule,
     DepartmentModule,
     CheckInModule,
+    ScheduleModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

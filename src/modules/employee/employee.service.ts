@@ -13,7 +13,9 @@ export class EmployeeService {
   ) {}
 
   public async getAll() {
-    return await this.employeeRepository.find();
+    return await this.employeeRepository.find({
+      relations: ['department', 'jobTitle'],
+    });
   }
 
   public async findOne(id: number) {
@@ -41,6 +43,7 @@ export class EmployeeService {
 
   public async getMyProfile(employee: Employee) {
     return await this.employeeRepository.findOne({
+      relations: ['department', 'jobTitle'],
       where: {
         id: employee.id,
       },

@@ -18,6 +18,7 @@ import {
 import { JobTitle } from './job-title.entity';
 import { Department } from './department.entity';
 import { CheckIn } from './check-in.entity';
+import { Schedule } from './schedule.entity';
 
 @Entity('employees')
 export class Employee {
@@ -131,4 +132,10 @@ export class Employee {
 
   @OneToMany(() => CheckIn, (checkIn) => checkIn.employee)
   checkIns: CheckIn[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.sender)
+  sendSchedules: Schedule[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.receiver)
+  receiveSchedules: Schedule[];
 }
